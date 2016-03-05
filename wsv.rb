@@ -1,10 +1,13 @@
+require './whitespace'
+
 class WhiteSpace
 	def initialize(file = "tmp.ws", &block)
-		@f = open(file,"w")
+		@f = open(file, "w")
 		instance_eval &block
 		#@f.print "\n\n\n"
 		@f.close
-		exec "ruby whitespace.rb < #{file}"
+		# exec "ruby whitespace.rb < #{file}"
+		Executor.new(Tokenizer.new(file).tokens).run
 	end
 
 	def trans_signed num

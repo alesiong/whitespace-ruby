@@ -2,17 +2,17 @@
 
 # whitepsace-ruby
 # Copyright (C) 2003 by Wayne E. Conrad
-# 
+#
 # This library is free software; you can redistribute it and/or
 # modify it under the terms of the GNU Lesser General Public
 # License as published by the Free Software Foundation; either
 # version 2 of the License, or (at your option) any later version.
-# 
+#
 # This library is distributed in the hope that it will be useful,
 # but WITHOUT ANY WARRANTY; without even the implied warranty of
 # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
 # Lesser General Public License for more details.
-# 
+#
 # You should have received a copy of the GNU Lesser General Public
 # License along with this library; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place, Suite 330, Boston, MA 02111-1307  USA
@@ -24,7 +24,7 @@ Opcodes = [
   [' \n\t', :swap],
   [' \n\n', :discard],
 	[' \t\n', :discardnum, :unsigned],
-  ['\t   ', :add], 
+  ['\t   ', :add],
   ['\t  \t', :sub],
   ['\t  \n', :mul],
   ['\t \t ', :div],
@@ -53,9 +53,17 @@ class Tokenizer
 
   attr_reader :tokens
 
-  def initialize
+  def initialize source = nil
     @tokens = []
-    @program = $<.read.tr("^ \t\n", "")
+    if source.nil? || !(source.is_a?(String))
+      source = ARGV[0]
+    end
+    begin
+      file = File.open(source)
+    rescue
+      file = $<
+    end
+    @program = file.read.tr("^ \t\n", "")
     while @program != "" do
       @tokens << tokenize
     end
@@ -88,12 +96,13 @@ class Executor
 
   def initialize(tokens)
     @tokens = tokens
+    # whether or not to output transform result to trans
 		@release = true
 		if !@release
 			@trans = open("trans", "w")
 		end
   end
-	
+
   def run
     @pc = 0	#Program pointer
     @stack = []
@@ -204,7 +213,7 @@ class Executor
   end
 
   def jump(label)
-    @tokens.each_with_index do |token, i| 
+    @tokens.each_with_index do |token, i|
       if token == [:label, label]
         @pc = i
         return
@@ -212,7 +221,7 @@ class Executor
     end
     error("Unknown label: #{label}")
   end
-	
+
 	def debug(msg)
 		if !@release
 			@trans.puts msg
@@ -221,4 +230,6 @@ class Executor
 
 end
 
-Executor.new(Tokenizer.new.tokens).run
+if __FILE__ == $0
+  Executor.new(Tokenizer.new.tokens).run
+end

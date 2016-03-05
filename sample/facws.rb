@@ -1,4 +1,4 @@
-require './wsv'
+require './wsv.rb'
 
 WhiteSpace.new("fac.ws"){
 	#fac
