@@ -1,0 +1,44 @@
+Num, Label
+[ST][ST]+ L
+S for 0,+
+T for 1,-
+
+
+Stack
+IMP:S
+S Num: push num into stack
+TS Num: copy num_th elem to the top
+TL Num: delete num elems
+LS: dup
+LT: swap 2 elem on top
+LL: delete top
+
+Math
+IMP:TS
+SS:+
+ST:-
+SL:*
+TS:/
+TT:mod
+
+Heap
+IMP:TT
+S:Store addr,num
+T:Get addr
+
+Control
+IMP:L
+SS Label: mark a proc
+ST Label: call a proc
+SL Label: jump to label
+TS Label: jump to label if 0
+TT Label: jump to label if negative
+TL: return
+LL: exit program
+
+IO
+IMP:TL
+SS: print as char
+ST: print as number
+TS: read a char to heap addr
+TT: read a num to heap addr
